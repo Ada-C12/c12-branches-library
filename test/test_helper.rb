@@ -12,7 +12,7 @@ class ActiveSupport::TestCase
   def perform_login(user = User.first)
     params = {
       user: {
-        username: user.username
+        name: user.name
       }
     }
     post login_path(params)
