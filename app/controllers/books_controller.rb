@@ -97,7 +97,7 @@ class BooksController < ApplicationController
     # The responsibility of this method is to return "strong params"
     # .require is used when we use form_with and a model, and therefore our expected form data has the "book" hash inside of it
     # .permit takes in a list of names of attributes to allow... (aka the new Book form has title, author, description)
-    return params.require(:book).permit(:title, :author_id, :description)
+    return params.require(:book).permit(:title, :author_id, :description, genre_ids: [])
 
     # Remember: If you ever update the database, model, and form, this will also need to be updated
   end

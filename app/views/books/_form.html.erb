@@ -9,6 +9,11 @@
   <%= f.select :author_id, @authors.map{ |auth| [auth.name, auth.id] } %>
   <%= f.label :description %>
   <%= f.text_field :description %>
+
+  <section>
+    <%= f.label :genres %>
+    <%= collection_check_boxes(:book, :genre_ids, Genre.all, :id, :name) %>
+  </section>
   
   <%= f.submit submit_button_label, class: "book-form-button" %>
 
