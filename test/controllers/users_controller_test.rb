@@ -3,23 +3,22 @@ require "test_helper"
 describe UsersController do
 
   describe "auth_callback" do
-    it "logs in an existing user and redirects them to the root path" do
+    it "logs in the first existing user and redirects them to the root path" do
       expect {
-        user = perform_login()
+        # The perform_login test_helper logs into the first existing User by default
+        perform_login
       }.wont_change "User.count"
 
       must_redirect_to root_path
-      expect(session[:user_id]).must_equal user.id
+      expect(session[:user_id]).must_equal User.first.id
       # You can test the flash notice too!
     end
 
     it "logs in a new user and redirects them back to the root path" do
       user = User.new(name: "Batman", provider: "github", uid: 999, email: "bat@man.com")
-      OmniAuth.config.mock_auth[:github] = 
-        OmniAuth::AuthHash.new(mock_auth_hash(user))
 
         expect {
-          get auth_callback_path(:github)
+          perform_login(user)
         }.must_differ "User.count", 1
 
         user = User.find_by(uid: user.uid)
@@ -30,17 +29,13 @@ describe UsersController do
     end
 
     it "should redirect back to root for invalid callbacks" do
-      OmniAuth.config.mock_auth[:github] = 
-      OmniAuth::AuthHash.new(mock_auth_hash(User.new))
-      
       expect {
-        get auth_callback_path(:github)
+        # In this case, User.new will create an invalid user
+        perform_login(User.new)
       }.wont_change "User.count"
 
       must_redirect_to root_path
       expect(session[:user_id]).must_be_nil
-
-
     end
 
 
